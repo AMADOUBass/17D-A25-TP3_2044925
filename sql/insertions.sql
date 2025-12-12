@@ -1,20 +1,45 @@
+-- Création de la séquence pour LOG_OPERATION
+CREATE SEQUENCE seq_log
+  START WITH 1000   -- premier identifiant généré
+  INCREMENT BY 1    -- incrément de 1 à chaque insertion
+  NOCACHE           -- optionnel : pas de cache
+  NOCYCLE;          -- optionnel : ne recommence pas
+
+-- Exemple d'insertion avec la séquence
+INSERT INTO LOG_OPERATION (id_log, table_concernee, operation, utilisateur, date_op, description)
+VALUES (seq_log.NEXTVAL, 'CHERCHEUR', 'INSERT', 'admin_rd', SYSDATE, 'Ajout initial de chercheurs');
+
+INSERT INTO LOG_OPERATION (id_log, table_concernee, operation, utilisateur, date_op, description)
+VALUES (seq_log.NEXTVAL, 'PROJET', 'INSERT', 'admin_rd', SYSDATE, 'Création des projets initiaux');
+
+INSERT INTO LOG_OPERATION (id_log, table_concernee, operation, utilisateur, date_op, description)
+VALUES (seq_log.NEXTVAL, 'EQUIPEMENT', 'INSERT', 'admin_rd', SYSDATE, 'Ajout d’équipements au stock');
+
+-- Finaliser
+COMMIT;
+
 -- ========================
 -- TABLE CHERCHEUR
 -- ========================
-INSERT INTO CHERCHEUR (id_chercheur, nom, prenom, specialite, date_embauche) VALUES (1, 'Dupont', 'Alice', 'Biotech', TO_DATE('2018-03-15', 'YYYY-MM-DD'));
-INSERT INTO CHERCHEUR (id_chercheur, nom, prenom, specialite, date_embauche) VALUES (2, 'Nguyen', 'Bao', 'IA', TO_DATE('2019-06-10', 'YYYY-MM-DD'));
-INSERT INTO CHERCHEUR (id_chercheur, nom, prenom, specialite, date_embauche) VALUES (3, 'Martin', 'Chloé', 'Physique', TO_DATE('2020-01-25', 'YYYY-MM-DD'));
-INSERT INTO CHERCHEUR (id_chercheur, nom, prenom, specialite, date_embauche) VALUES (4, 'Roy', 'David', 'Chimie', TO_DATE('2017-11-02', 'YYYY-MM-DD'));
-INSERT INTO CHERCHEUR (id_chercheur, nom, prenom, specialite, date_embauche) VALUES (5, 'Tremblay', 'Éric', 'Mathématiques', TO_DATE('2016-05-18', 'YYYY-MM-DD'));
+INSERT INTO CHERCHEUR (id_chercheur, nom, prenom, specialite, date_embauche)
+VALUES (1, 'Dupont', 'Alice', 'Biotech', TO_DATE('2018-03-15', 'YYYY-MM-DD'));
+INSERT INTO CHERCHEUR (id_chercheur, nom, prenom, specialite, date_embauche)
+VALUES (2, 'Nguyen', 'Bao', 'IA', TO_DATE('2019-06-10', 'YYYY-MM-DD'));
+INSERT INTO CHERCHEUR (id_chercheur, nom, prenom, specialite, date_embauche)
+VALUES (3, 'Martin', 'Chloé', 'Physique', TO_DATE('2020-01-25', 'YYYY-MM-DD'));
+INSERT INTO CHERCHEUR (id_chercheur, nom, prenom, specialite, date_embauche)
+VALUES (4, 'Roy', 'David', 'Chimie', TO_DATE('2017-11-02', 'YYYY-MM-DD'));
+INSERT INTO CHERCHEUR (id_chercheur, nom, prenom, specialite, date_embauche)
+VALUES (5, 'Tremblay', 'Éric', 'Mathématiques', TO_DATE('2016-05-18', 'YYYY-MM-DD'));
 
 -- ========================
 -- TABLE PROJET
 -- ========================
-INSERT INTO PROJET (id_projet, titre, domaine, budget, date_debut, date_fin, id_chercheur_resp)
+INSERT INTO PROJET (id_projet, titre, domaine_scientifique, budget, date_debut, date_fin, id_chercheur_resp)
 VALUES (101, 'NanoCapteurs', 'Biotech', 500000, TO_DATE('2023-01-01','YYYY-MM-DD'), TO_DATE('2025-01-01','YYYY-MM-DD'), 1);
-INSERT INTO PROJET (id_projet, titre, domaine, budget, date_debut, date_fin, id_chercheur_resp)
+INSERT INTO PROJET (id_projet, titre, domaine_scientifique, budget, date_debut, date_fin, id_chercheur_resp)
 VALUES (102, 'DeepPredict', 'IA', 350000, TO_DATE('2022-09-01','YYYY-MM-DD'), TO_DATE('2024-09-01','YYYY-MM-DD'), 2);
-INSERT INTO PROJET (id_projet, titre, domaine, budget, date_debut, date_fin, id_chercheur_resp)
+INSERT INTO PROJET (id_projet, titre, domaine_scientifique, budget, date_debut, date_fin, id_chercheur_resp)
 VALUES (103, 'QuantumSense', 'Physique', 450000, TO_DATE('2023-03-10','YYYY-MM-DD'), TO_DATE('2025-03-10','YYYY-MM-DD'), 3);
 
 -- ========================
@@ -25,7 +50,7 @@ VALUES (201, 'Microscope BioPro X', 'Analyse biologique', TO_DATE('2019-04-20','
 INSERT INTO EQUIPEMENT (id_equipement, nom, categorie, date_acquisition, etat)
 VALUES (202, 'Serveur GPU A100', 'Calcul haute performance', TO_DATE('2021-12-10','YYYY-MM-DD'), 'Disponible');
 INSERT INTO EQUIPEMENT (id_equipement, nom, categorie, date_acquisition, etat)
-VALUES (203, 'Laser Quantix', 'Instrumentation', TO_DATE('2020-08-05','YYYY-MM-DD'), 'En maintenance');
+VALUES (203, 'Laser Quantix', 'Instrumentation', TO_DATE('2020-08-05','YYYY-MM-DD'), 'Disponible'); -- corrigé
 INSERT INTO EQUIPEMENT (id_equipement, nom, categorie, date_acquisition, etat)
 VALUES (204, 'Spectromètre NanoX', 'Analyse chimique', TO_DATE('2018-06-01','YYYY-MM-DD'), 'Hors service');
 
@@ -70,3 +95,16 @@ INSERT INTO LOG_OPERATION (id_log, table_concernee, operation, utilisateur, date
 VALUES (602, 'PROJET', 'INSERT', 'admin_rd', SYSDATE, 'Création des projets initiaux');
 INSERT INTO LOG_OPERATION (id_log, table_concernee, operation, utilisateur, date_op, description)
 VALUES (603, 'EQUIPEMENT', 'INSERT', 'admin_rd', SYSDATE, 'Ajout d’équipements au stock');
+
+-- Finaliser
+COMMIT;
+
+--efface les données inséréespour Tests
+-- DELETE FROM ECHANTILLON;
+-- DELETE FROM EXPERIENCE;
+-- DELETE FROM AFFECTATION_EQUIP;
+-- DELETE FROM EQUIPEMENT;
+-- DELETE FROM PROJET;
+-- DELETE FROM CHERCHEUR;
+-- DELETE FROM LOG_OPERATION;
+-- COMMIT;

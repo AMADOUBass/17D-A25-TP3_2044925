@@ -18,7 +18,7 @@ BEGIN
       nom VARCHAR2(50) NOT NULL,
       prenom VARCHAR2(50) NOT NULL,
       specialite VARCHAR2(30) NOT NULL CHECK (specialite IN (''Biotech'', ''IA'', ''Physique'', ''Chimie'', ''Mathématiques'', ''Autre'')),
-      date_embauche DATE NOT NULL CHECK (date_embauche <= SYSDATE)
+      date_embauche DATE NOT NULL
     )
   ';
 EXCEPTION
@@ -43,10 +43,10 @@ BEGIN
     CREATE TABLE PROJET (
       id_projet NUMBER PRIMARY KEY,
       titre VARCHAR2(100) NOT NULL,
-      domaine VARCHAR2(50) NOT NULL,
+      domaine_scientifique VARCHAR2(50) NOT NULL,
       budget NUMBER(10,2) NOT NULL CHECK (budget > 0),
       date_debut DATE NOT NULL,
-      date_fin DATE NOT NULL CHECK (date_fin >= date_debut),
+      date_fin DATE NOT NULL,
       id_chercheur_resp NUMBER NOT NULL,
       CONSTRAINT fk_chercheur_resp FOREIGN KEY (id_chercheur_resp) REFERENCES CHERCHEUR(id_chercheur)
     )
@@ -74,7 +74,7 @@ BEGIN
       id_equipement NUMBER PRIMARY KEY,
       nom VARCHAR2(100) NOT NULL,
       categorie VARCHAR2(50) NOT NULL,
-      date_acquisition DATE NOT NULL CHECK (date_acquisition <= SYSDATE),
+      date_acquisition DATE NOT NULL ,
       etat VARCHAR2(20) NOT NULL CHECK (etat IN (''Disponible'', ''En maintenance'', ''Hors service''))
     )
   ';
@@ -133,6 +133,7 @@ BEGIN
       date_realisation DATE NOT NULL,
       resultat CLOB,
       statut VARCHAR2(20) NOT NULL CHECK (statut IN (''En cours'', ''Terminée'', ''Annulée'')),
+      reussite VARCHAR2(3) CHECK (reussite IN (''OUI'', ''NON'')),
       CONSTRAINT fk_exp_projet FOREIGN KEY (id_projet) REFERENCES PROJET(id_projet)
     )
   ';
@@ -195,5 +196,21 @@ BEGIN
 EXCEPTION
   WHEN OTHERS THEN
     DBMS_OUTPUT.PUT_LINE('Erreur LOG_OPERATION : ' || SQLERRM);
+END;
+/
+
+BEGIN
+  EXECUTE IMMEDIATE '
+  CREATE TABLE MESURE (
+    id_mesure NUMBER PRIMARY KEY,
+    id_experience NUMBER NOT NULL,
+    valeur NUMBER NOT NULL,
+    date_mesure DATE DEFAULT SYSDATE,
+    CONSTRAINT fk_mesure_experience FOREIGN KEY (id_experience) REFERENCES EXPERIENCE(id_exp)
+  )'
+  ;
+EXCEPTION
+  WHEN OTHERS THEN
+    IF SQLCODE != -942 THEN RAISE; END IF;
 END;
 /

@@ -12,13 +12,26 @@ EXCEPTION
     RETURN NULL;
 END;
 /
--- verifier_disponibilite_equipement(id_equipement) Retourne 1 si l’équipement est 
--- libre, 0 sinon. 
--- Implémente une collection 
--- TABLE OF RECORD.
--- CREATE OR REPLACE FUNCTION verifier_disponibilite_equipement(
---   id_equipement IN NUMBER
--- ) RETURN BOOLEAN IS
+
+CREATE OR REPLACE FUNCTION verifier_disponibilite_equipement (
+  p_id_equipement IN NUMBER
+) RETURN NUMBER IS
+  v_etat VARCHAR2(20);
+BEGIN
+  SELECT etat INTO v_etat FROM EQUIPEMENT WHERE id_equipement = p_id_equipement;
+  IF v_etat = 'Disponible' THEN
+    RETURN 1;
+  ELSE
+    RETURN 0;
+  END IF; 
+EXCEPTION
+  WHEN NO_DATA_FOUND THEN
+    RETURN 0;
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('Erreur verifier_disponibilite_equipement : ' || SQLERRM);
+    RETURN 0;
+END;
+/
 
 
 CREATE OR REPLACE FUNCTION moyenne_mesures_experience (
@@ -35,3 +48,30 @@ EXCEPTION
 END;
 /
 
+-- DECLARE
+--   v_duree   NUMBER;
+--   v_dispo   NUMBER;
+--   v_moyenne NUMBER;
+-- BEGIN
+--   -- Test de la fonction calculer_duree_projet
+--   v_duree := calculer_duree_projet(1);
+--   DBMS_OUTPUT.PUT_LINE('Durée du projet 1 : ' || v_duree || ' jours');
+
+--   -- Test de la fonction verifier_disponibilite_equipement
+--   v_dispo := verifier_disponibilite_equipement(101);
+--   IF v_dispo = 1 THEN
+--     DBMS_OUTPUT.PUT_LINE('Équipement 101 est disponible.');
+--   ELSE
+--     DBMS_OUTPUT.PUT_LINE('Équipement 101 n''est pas disponible.');
+--   END IF;
+
+--   -- Test de la fonction moyenne_mesures_experience
+--   v_moyenne := moyenne_mesures_experience(1001);
+--   DBMS_OUTPUT.PUT_LINE('Moyenne des mesures pour l''expérience 1001 : ' || v_moyenne);
+
+-- EXCEPTION
+--   WHEN OTHERS THEN
+--     DBMS_OUTPUT.PUT_LINE('Erreur : ' || SQLERRM);
+-- END;
+-- /
+ 
